@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -16,10 +14,6 @@ public abstract class StateMachine : MonoBehaviour
     [SerializeField] protected SubStateMachine currentSubStateMachine;
     [SerializeField] protected State currentState;
     protected bool active => fsmCoroutine != null;
-
-    [Header("State Machine Ownership")]
-    [SerializeField] protected List<SubStateMachine> allSubStateMachines;
-    [SerializeField] protected List<SubStateMachine> allStates;
 
     [Header("State Machine Update Coroutine")]
     protected Coroutine fsmCoroutine;
@@ -107,29 +101,48 @@ public abstract class StateMachine : MonoBehaviour
     {
         while (true)
         {
-            State subStateMachineToTransition = currentSubStateMachine?.CheckTransitions();
-            if (subStateMachineToTransition != null)
-            {
-                SetState(subStateMachineToTransition);
-                break;
-            }
-            else
-            {
-                subStateMachineToTransition?.Execute();
-            }
-
-            State stateToTransition = currentState?.CheckTransitions();
-            if (stateToTransition != null)
-            {
-                SetState(stateToTransition);
-                break;
-            }
-            else
-            {
-                stateToTransition?.Execute();
-            }
+            if (SubStateMachineTransitionChecker()) continue;
+            if (StateTransitionChecker()) continue;
 
             yield return null;
+        }
+    }
+
+    protected bool SubStateMachineTransitionChecker()
+    {
+        State subStateMachineToTransition = currentSubStateMachine?.CheckTransitions();
+        if (subStateMachineToTransition != null)
+        {
+            SetState(subStateMachineToTransition);
+            return true;
+        }
+        else
+        {
+            subStateMachineToTransition?.Execute();
+            return false;
+        }
+    }
+    protected bool StateTransitionChecker()
+    {
+        State stateToTransition = currentState?.CheckTransitions();
+        if (stateToTransition != null)
+        {
+            SetState(stateToTransition);
+            return true;
+        }
+        else
+        {
+            stateToTransition?.Execute();
+            return false;
+        }
+    }
+
+    protected void NullStateChecker()
+    {
+        if (currentState == null)
+        {
+            Debug.LogError("No Current State active! Exiting FSM.");
+            ExitFSM();
         }
     }
     #endregion
@@ -140,20 +153,23 @@ public abstract class StateMachine : MonoBehaviour
     {
         return currentState;
     }
-    public void SetState(State newState)
+    protected void SetState(State newState)
     {
         if (newState != null)
         {
             if (newState is SubStateMachine)
             {
-                currentSubStateMachine = newState as SubStateMachine;
-                currentSubStateMachine?.Enter();
+                SetSubStateMachine(newState as SubStateMachine, true);
             }
             else
             {
-                StackSubStateMachines();
-
                 currentState?.Exit();
+
+                if (currentSubStateMachine != newState.GetParentSubStateMachine())
+                {
+                    SetSubStateMachine(newState.GetParentSubStateMachine(), false);
+                }
+
                 currentState = newState;
                 currentState?.Enter();
             }
@@ -170,48 +186,15 @@ public abstract class StateMachine : MonoBehaviour
     {
         return currentSubStateMachine;
     }
-    public List<SubStateMachine> GetAllActiveSubStateMachines()
+    protected void SetSubStateMachine(SubStateMachine ssm, bool entryToStateMachine)
     {
-        return allSubStateMachines;
+        currentSubStateMachine?.Exit();
+        currentSubStateMachine = ssm;
+        currentSubStateMachine?.Enter();
+
+        if (entryToStateMachine) SetState(currentSubStateMachine.entryState);
     }
-    #endregion
 
-    #region SubState Finder Method
-    public virtual void StackSubStateMachines()
-    {
-        List<SubStateMachine> subStatesFound = new List<SubStateMachine>();
-        bool foundParent = false;
-
-        State nextState = currentState;
-        SubStateMachine newlyFoundSubStateMachine = null;
-
-        while (!foundParent)
-        {
-            newlyFoundSubStateMachine = nextState.GetParentSubStateMachine();
-
-            if (newlyFoundSubStateMachine != null)
-            {
-                if (subStatesFound.Contains(newlyFoundSubStateMachine))
-                {
-                    Debug.LogError($"Stack Overflow! Looping same SubStateMachines. Debug Parents here: {currentState}");
-                    ExitFSM();
-                    return;
-                }
-
-                subStatesFound.Add(newlyFoundSubStateMachine);
-                nextState = newlyFoundSubStateMachine;
-                continue;
-            }
-            else
-            {
-                foundParent = true;
-            }        
-        }
-
-        subStatesFound.Reverse();
-        allSubStateMachines = subStatesFound;
-        currentSubStateMachine = allSubStateMachines[allSubStateMachines.Count - 1];
-    }
     #endregion
     #endregion
 }
