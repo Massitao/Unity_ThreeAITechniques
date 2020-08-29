@@ -6,8 +6,4 @@ public class RelaxedSSM : SubStateMachine
     {
         Debug.Log($"Entered <color=green>Relaxed</color> Sub State");
     }
-    public override void Exit()
-    {
-        Debug.Log($"Exited <color=green>Relaxed</color> Sub State");
-    }
 }

@@ -4,13 +4,10 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public abstract class StateMachine : MonoBehaviour
 {
-    [Header("State Machine Name")]
-    public string stateMachineName;
-
     [Header("State Machine Initial State")]
     [SerializeField] protected State initialState;
 
-    [Header("State Machine Current Status")]
+    [Header("State Machine Current Status (DEBUG)")]
     [SerializeField] protected SubStateMachine currentSubStateMachine;
     [SerializeField] protected State currentState;
     protected bool active => fsmCoroutine != null;
@@ -18,14 +15,6 @@ public abstract class StateMachine : MonoBehaviour
     [Header("State Machine Update Coroutine")]
     protected Coroutine fsmCoroutine;
 
-
-    #region Mono Methods
-    // Awake is called when the script instance is being loaded.
-    protected abstract void Awake();
-
-    // Start is called before the first frame update
-    protected abstract void Start();
-    #endregion
 
     #region State Machine Methods
     #region Initialization / Exit Methods
@@ -73,7 +62,7 @@ public abstract class StateMachine : MonoBehaviour
 
 
     // Clean / Reset variable values if needed
-    public abstract void ResetValueFSM();
+    public virtual void ResetValueFSM() { }
 
 
     // Exit FSM, exit current state and stop Update Coroutine
@@ -118,7 +107,7 @@ public abstract class StateMachine : MonoBehaviour
         }
         else
         {
-            subStateMachineToTransition?.Execute();
+            currentSubStateMachine?.Execute();
             return false;
         }
     }
@@ -132,7 +121,7 @@ public abstract class StateMachine : MonoBehaviour
         }
         else
         {
-            stateToTransition?.Execute();
+            currentState?.Execute();
             return false;
         }
     }
@@ -153,7 +142,7 @@ public abstract class StateMachine : MonoBehaviour
     {
         return currentState;
     }
-    protected void SetState(State newState)
+    protected virtual void SetState(State newState)
     {
         if (newState != null)
         {
@@ -186,7 +175,7 @@ public abstract class StateMachine : MonoBehaviour
     {
         return currentSubStateMachine;
     }
-    protected void SetSubStateMachine(SubStateMachine ssm, bool entryToStateMachine)
+    protected virtual void SetSubStateMachine(SubStateMachine ssm, bool entryToStateMachine)
     {
         currentSubStateMachine?.Exit();
         currentSubStateMachine = ssm;
@@ -194,7 +183,6 @@ public abstract class StateMachine : MonoBehaviour
 
         if (entryToStateMachine) SetState(currentSubStateMachine.entryState);
     }
-
     #endregion
     #endregion
 }

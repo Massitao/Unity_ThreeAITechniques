@@ -1,5 +1,7 @@
-﻿[System.Serializable]
-public abstract class StateTransitionConditions
+﻿using UnityEngine;
+
+[System.Serializable]
+public abstract class StateTransitionConditions : MonoBehaviour
 {
     public abstract bool IsMet();
 }
