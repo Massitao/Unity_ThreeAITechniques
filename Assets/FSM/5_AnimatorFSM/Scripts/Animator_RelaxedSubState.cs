@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnterTEST : StateMachineBehaviour
+public class Animator_RelaxedSubState : StateMachineBehaviour
 {
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -35,14 +35,14 @@ public class EnterTEST : StateMachineBehaviour
     //}
 
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
-    override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
-    {
-        Debug.Log($"Entered State Machine {stateMachinePathHash}");
-    }
+    //override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
+    //{
+    //    
+    //}
 
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
-    override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
-    {
-        Debug.Log($"Exited State Machine {stateMachinePathHash}");
-    }
+    //override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
+    //{
+    //    
+    //}
 }

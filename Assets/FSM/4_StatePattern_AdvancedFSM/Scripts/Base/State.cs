@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public interface IState
 {
@@ -11,6 +10,9 @@ public interface IState
 
 public abstract class State : MonoBehaviour, IState
 {
+    [Header("FSM Owner")]
+    public StateMachine fsmOwner;
+
     [Header("State Name")]
     public string stateMachineName;
 
