@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-[System.Serializable]
-public abstract class StateTransitionConditions : MonoBehaviour
+namespace StatePattern_FSM
 {
-    public abstract bool IsMet();
+    [System.Serializable]
+    public abstract class StateTransitionConditions : MonoBehaviour
+    {
+        public abstract bool IsMet();
+    }
 }

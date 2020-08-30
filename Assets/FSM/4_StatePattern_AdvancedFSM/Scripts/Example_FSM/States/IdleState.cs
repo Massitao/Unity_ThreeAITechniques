@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using StatePattern_FSM;
 
 public class IdleState : State
 {

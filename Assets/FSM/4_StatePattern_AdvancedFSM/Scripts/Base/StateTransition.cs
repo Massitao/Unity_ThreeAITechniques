@@ -1,27 +1,30 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class StateTransition
+namespace StatePattern_FSM
 {
-    [Header("Transition Name")]
-    [SerializeField] private string transitionName;
-
-    [Header("State To Transition")]
-    public State nextState;
-
-    [Header("Transition Conditions")]
-    [SerializeField] protected List<StateTransitionConditions> conditions;
-
-    public bool CanTransition()
+    [System.Serializable]
+    public class StateTransition
     {
-        foreach (StateTransitionConditions condition in conditions)
+        [Header("Transition Name")]
+        [SerializeField] private string transitionName;
+
+        [Header("State To Transition")]
+        public State nextState;
+
+        [Header("Transition Conditions")]
+        [SerializeField] protected List<StateTransitionConditions> conditions;
+
+        public bool CanTransition()
         {
-            if (!condition.IsMet())
+            foreach (StateTransitionConditions condition in conditions)
             {
-                return false;
+                if (!condition.IsMet())
+                {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 }

@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-public abstract class SubStateMachine : State
+namespace StatePattern_FSM
 {
-    [Header("Sub State Machine Properties")]
-    public State entryState;
+    public abstract class SubStateMachine : State
+    {
+        [Header("Sub State Machine Properties")]
+        public State entryState;
+    }
 }

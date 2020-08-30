@@ -2,170 +2,177 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SimpleFSM_UI : MonoBehaviour
+namespace Simple_FSM
 {
-    [Header("Components")]
-    [SerializeField] private SimpleFSM fsm;
-    [SerializeField] private Animator spriteAnimator;
-
-    [Space(10)]
-
-    [Header("UI FSM State Text")]
-    [SerializeField] private Text stateText;
-
-    [Space(10)]
-
-    [Header("UI Input Components")]
-    [SerializeField] private Dropdown distanceDropdown;
-
-    [Space(5)]
-
-    [SerializeField] private InputField idlePauseTimeInputField;
-    [SerializeField] private Text remainingIdleTimeTitleText;
-    [SerializeField] private Text remainingIdleTimeText;
-
-    [Space(5)]
-
-    [SerializeField] private Toggle reachedPatrolPointToggle;
-
-    [Space(5)]
-
-    [SerializeField] private Toggle canSeePlayerToggle;
-    [SerializeField] private Toggle playerIsDeadToggle;
-
-    [Space(10)]
-
-    [Header("Sprite Animator Triggers")]
-    [SerializeField] private string idleTrigger;
-    [SerializeField] private string patrolTrigger;
-    [SerializeField] private string chaseTrigger;
-    [SerializeField] private string attackTrigger;
-
-    [Header("Timer Coroutine")]
-    private Coroutine timerCoroutine;
-
-
-    private void OnEnable()
+    public class SimpleFSM_UI : MonoBehaviour
     {
-        fsm.OnStateChange += UpdateUI;
-    }
-    private void OnDisable()
-    {
-        fsm.OnStateChange -= UpdateUI;
-    }
+        [Header("Components")]
+        [SerializeField] private SimpleFSM fsm;
+        [SerializeField] private Animator spriteAnimator;
+
+        [Space(10)]
+
+        [Header("UI FSM State Text")]
+        [SerializeField] private Text stateText;
+
+        [Space(10)]
+
+        [Header("UI Input Components")]
+        [SerializeField] private Dropdown distanceDropdown;
+
+        [Space(5)]
+
+        [SerializeField] private InputField idlePauseTimeInputField;
+        [SerializeField] private Text remainingIdleTimeTitleText;
+        [SerializeField] private Text remainingIdleTimeText;
+
+        [Space(5)]
+
+        [SerializeField] private Toggle reachedPatrolPointToggle;
+
+        [Space(5)]
+
+        [SerializeField] private Toggle canSeePlayerToggle;
+        [SerializeField] private Toggle playerIsDeadToggle;
+
+        [Space(10)]
+
+        [Header("Sprite Animator Triggers")]
+        [SerializeField] private string idleTrigger;
+        [SerializeField] private string patrolTrigger;
+        [SerializeField] private string chaseTrigger;
+        [SerializeField] private string attackTrigger;
+
+        [Header("Timer Coroutine")]
+        private Coroutine timerCoroutine;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        UpdateUI();
-    }
-
-
-    private void UpdateUI()
-    {
-        switch (fsm.GetRobotState())
+        private void OnEnable()
         {
-            case SimpleFSM.RobotStates.Idle:
-                spriteAnimator.SetTrigger(idleTrigger);
-
-                if (timerCoroutine != null)
-                {
-                    StopCoroutine(timerCoroutine);
-                }
-                timerCoroutine = StartCoroutine(TimerCountdown());
-
-                break;
-
-            case SimpleFSM.RobotStates.Patrol:
-                spriteAnimator.SetTrigger(patrolTrigger);
-
-                StopTimer();
-
-                break;
-
-            case SimpleFSM.RobotStates.Chase:
-                spriteAnimator.SetTrigger(chaseTrigger);
-
-                StopTimer();
-
-                break;
-
-            case SimpleFSM.RobotStates.Attack:
-                spriteAnimator.SetTrigger(attackTrigger);
-
-                StopTimer();
-
-                break;
+            fsm.OnStateChange += UpdateUI;
+        }
+        private void OnDisable()
+        {
+            fsm.OnStateChange -= UpdateUI;
         }
 
-        stateText.text = fsm.GetRobotState().ToString();
 
-        distanceDropdown.SetValueWithoutNotify((int)fsm.GetRobotToPlayerDistance());
-
-        idlePauseTimeInputField.text = fsm.GetIdlePauseTime().ToString();
-
-        reachedPatrolPointToggle.SetIsOnWithoutNotify(fsm.GetPatrolReachedPoint());
-
-        canSeePlayerToggle.SetIsOnWithoutNotify(fsm.GetPlayerVisibility());
-        playerIsDeadToggle.SetIsOnWithoutNotify(fsm.GetPlayerStatus());
-    }
-
-    private void StopTimer()
-    {
-        if (timerCoroutine != null)
+        // Start is called before the first frame update
+        void Start()
         {
-            remainingIdleTimeTitleText.enabled = false;
-            remainingIdleTimeText.enabled = false;
-
-            StopCoroutine(timerCoroutine);
-            timerCoroutine = null;
-        }
-    }
-    private IEnumerator TimerCountdown()
-    {
-        remainingIdleTimeTitleText.enabled = true;
-        remainingIdleTimeText.enabled = true;
-
-        while(fsm.GetIdlePauseTime() - fsm.GetIdlePauseTimer() > Mathf.Epsilon)
-        {
-            remainingIdleTimeText.text = (fsm.GetIdlePauseTime() - fsm.GetIdlePauseTimer()).ToString("0.00");
-            yield return null;
+            UpdateUI();
         }
 
-        StopTimer();
 
-        yield break;
-    }
-
-
-    public void SetRobotToPlayerDistance(int newDistance)
-    {
-        fsm.SetRobotToPlayerDistance((SimpleFSM.Distance)newDistance);
-    }
-
-    public void SetIdlePauseTime(string newTime)
-    {
-        if (int.Parse(newTime) < 0f)
+        private void UpdateUI()
         {
-            idlePauseTimeInputField.SetTextWithoutNotify(fsm.GetIdlePauseTime().ToString());
-            return;
+            switch (fsm.GetRobotState())
+            {
+                case SimpleFSM.RobotStates.Idle:
+                    spriteAnimator.SetTrigger(idleTrigger);
+
+                    StartTimer();
+
+                    break;
+
+                case SimpleFSM.RobotStates.Patrol:
+                    spriteAnimator.SetTrigger(patrolTrigger);
+
+                    StopTimer();
+
+                    break;
+
+                case SimpleFSM.RobotStates.Chase:
+                    spriteAnimator.SetTrigger(chaseTrigger);
+
+                    StopTimer();
+
+                    break;
+
+                case SimpleFSM.RobotStates.Attack:
+                    spriteAnimator.SetTrigger(attackTrigger);
+
+                    StopTimer();
+
+                    break;
+            }
+
+            stateText.text = fsm.GetRobotState().ToString();
+
+            distanceDropdown.SetValueWithoutNotify((int)fsm.GetRobotToPlayerDistance());
+
+            idlePauseTimeInputField.text = fsm.GetIdlePauseTime().ToString();
+
+            reachedPatrolPointToggle.SetIsOnWithoutNotify(fsm.GetPatrolReachedPoint());
+
+            canSeePlayerToggle.SetIsOnWithoutNotify(fsm.GetPlayerVisibility());
+            playerIsDeadToggle.SetIsOnWithoutNotify(fsm.GetPlayerStatus());
         }
 
-        fsm.SetIdlePauseTime(int.Parse(newTime));
-    }
+        private void StartTimer()
+        {
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+            }
+            timerCoroutine = StartCoroutine(TimerCountdown());
+        }
+        private void StopTimer()
+        {
+            if (timerCoroutine != null)
+            {
+                remainingIdleTimeTitleText.enabled = false;
+                remainingIdleTimeText.enabled = false;
 
-    public void SetPatrolPointCheck(bool reachedPoint)
-    {
-        fsm.SetPatrolReachedPoint(reachedPatrolPointToggle);
-    }
+                StopCoroutine(timerCoroutine);
+                timerCoroutine = null;
+            }
+        }
+        private IEnumerator TimerCountdown()
+        {
+            remainingIdleTimeTitleText.enabled = true;
+            remainingIdleTimeText.enabled = true;
 
-    public void SetPlayerVisibility(bool visible)
-    {
-        fsm.SetPlayerVisibility(visible);
-    }
-    public void SetPlayerStatus(bool reachedPoint)
-    {
-        fsm.SetPlayerStatus(reachedPoint);
+            while (fsm.GetIdlePauseTime() - fsm.GetIdlePauseTimer() > Mathf.Epsilon)
+            {
+                remainingIdleTimeText.text = (fsm.GetIdlePauseTime() - fsm.GetIdlePauseTimer()).ToString("0.00");
+                yield return null;
+            }
+
+            StopTimer();
+
+            yield break;
+        }
+
+
+        public void SetRobotToPlayerDistance(int newDistance)
+        {
+            fsm.SetRobotToPlayerDistance((SimpleFSM.Distance)newDistance);
+        }
+
+        public void SetIdlePauseTime(string newTime)
+        {
+            if (int.Parse(newTime) < 0f)
+            {
+                idlePauseTimeInputField.SetTextWithoutNotify(fsm.GetIdlePauseTime().ToString());
+                return;
+            }
+
+            fsm.SetIdlePauseTime(int.Parse(newTime));
+        }
+
+        public void SetPatrolPointCheck(bool reachedPoint)
+        {
+            fsm.SetPatrolReachedPoint(reachedPatrolPointToggle);
+        }
+
+        public void SetPlayerVisibility(bool visible)
+        {
+            fsm.SetPlayerVisibility(visible);
+        }
+        public void SetPlayerStatus(bool reachedPoint)
+        {
+            fsm.SetPlayerStatus(reachedPoint);
+        }
     }
 }
