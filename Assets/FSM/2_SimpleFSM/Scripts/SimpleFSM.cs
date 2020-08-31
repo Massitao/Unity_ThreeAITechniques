@@ -58,8 +58,6 @@ namespace Simple_FSM
                         return;
                     }
 
-                    CheckOnPlayer();
-
                     break;
 
                 case RobotStates.Patrol:
@@ -69,20 +67,9 @@ namespace Simple_FSM
                         return;
                     }
 
-                    CheckOnPlayer();
-
-                    break;
-
-                case RobotStates.Chase:
-                    CheckOnPlayer();
-
-                    break;
-
-                case RobotStates.Attack:
-                    CheckOnPlayer();
-
                     break;
             }
+            CheckOnPlayer();
         }
         private void SetRobotState(RobotStates newRobotState)
         {

@@ -65,8 +65,6 @@ namespace Hierarchy_FSM
                         return;
                     }
 
-                    CheckOnPlayer();
-
                     break;
 
                 case RobotStates.Patrol:
@@ -76,20 +74,10 @@ namespace Hierarchy_FSM
                         return;
                     }
 
-                    CheckOnPlayer();
-
-                    break;
-
-                case RobotStates.Chase:
-                    CheckOnPlayer();
-
-                    break;
-
-                case RobotStates.Attack:
-                    CheckOnPlayer();
-
                     break;
             }
+
+            CheckOnPlayer();
         }
 
         private void SetGroupRobotState(RobotGroupStates newGroupRobotState, bool doSwitch)

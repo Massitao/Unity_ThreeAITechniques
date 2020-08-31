@@ -121,11 +121,11 @@ namespace Hierarchy_FSM
         }
         private void StopTimer()
         {
+            remainingIdleTimeTitleText.enabled = false;
+            remainingIdleTimeText.enabled = false;
+
             if (timerCoroutine != null)
             {
-                remainingIdleTimeTitleText.enabled = false;
-                remainingIdleTimeText.enabled = false;
-
                 StopCoroutine(timerCoroutine);
                 timerCoroutine = null;
             }

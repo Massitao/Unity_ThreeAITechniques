@@ -54,37 +54,43 @@ namespace Hierarchy_FSM
                 case RobotStates.Idle:
                     idlePauseTimer += Time.deltaTime;
 
-                    if (idlePauseTimer >= idlePauseTime)
+                    if (idlePauseTimer < idlePauseTime)
+                    {
+                        Debug.Log($"<color=green>IDLE</color>");
+                    }
+                    else
                     {
                         SetRobotState(RobotStates.Patrol);
                         return;
                     }
 
-                    CheckOnPlayer();
-
                     break;
 
                 case RobotStates.Patrol:
-                    if (reachedPatrolPoint)
+                    if (!reachedPatrolPoint)
+                    {
+                        Debug.Log($"<color=yellow>PATROL</color>");
+                    }
+                    else
                     {
                         SetRobotState(RobotStates.Idle);
                         return;
                     }
 
-                    CheckOnPlayer();
-
                     break;
 
                 case RobotStates.Chase:
-                    CheckOnPlayer();
+                    Debug.Log($"<color=orange>CHASE</color>");
 
                     break;
 
                 case RobotStates.Attack:
-                    CheckOnPlayer();
+                    Debug.Log($"<color=red>ATTACK</color>");
 
                     break;
             }
+
+            CheckOnPlayer();
         }
 
         private void SetGroupRobotState(RobotGroupStates newGroupRobotState, bool doSwitch)
