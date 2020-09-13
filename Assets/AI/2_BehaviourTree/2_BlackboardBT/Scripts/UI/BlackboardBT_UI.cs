@@ -176,8 +176,8 @@ public class BlackboardBT_UI : MonoBehaviour
     {
         bt.SetPlayerVisibility(visible);
     }
-    public void SetPlayerStatus(bool reachedPoint)
+    public void SetPlayerStatus(bool dead)
     {
-        bt.SetPlayerStatus(reachedPoint);
+        bt.SetPlayerStatus(dead);
     }
 }
