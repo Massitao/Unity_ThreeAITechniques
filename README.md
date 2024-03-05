@@ -5,5 +5,3 @@ That includes <b>Finite State Machines</b>, <b>Behaviour Trees</b> and <b>Utilit
 Done for my undergraduate thesis about AI at U-Tad.
 
 ![alt text](https://github.com/IIMass/Unity_ThreeAITechniques/blob/master/ThreeAITechniques.png?raw=true)
-
-This was a designer's attempt to code all these AIs.
